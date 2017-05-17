@@ -7,3 +7,5 @@
 
           (it "should be able to load a schema from disk"
               (should (not (nil? test-schema)))))
+
+(run-specs)
