@@ -7,21 +7,21 @@
 
 ; all span nodes will have a :start and :length to reference the star and end
 ; offsets into the source text
-(defn- is-span? [node]
+(defn is-span? [node]
   "True if node is a span"
   (let [tags (:content node)
         has-span-tag? (not (empty? (filter #(= (:tag % nil) :span) tags)))]
     has-span-tag?))
 
 ; all span container nodes will have a :first and :last
-(defn- is-span-container? [node]
+(defn is-span-container? [node]
   "True if node is a span container"
   (let [tags (:content node)
         has-span-container-tag? (not (empty? (filter #(= (:tag % nil) :spanContainer) tags)))]
     has-span-container-tag?))
 
 ; All sequence nodes will have a :next
-(defn- is-sequence? [node]
+(defn is-sequence? [node]
   "True if node is a sequence"
   (let [tags (:content node)
         has-sequence-tag? (not (empty? (filter #(= (:tag % nil) :sequence) tags)))]
@@ -29,7 +29,7 @@
 
 (defrecord NamedProperty [type name attributes])
 
-(defn- get-node-properties [node property-type]
+(defn get-node-properties [node property-type]
   "Returns properties of specified type, if present. Returns nil otherwise"
   (assert (s/valid? keyword? property-type) "Propery type must be a valid keyword.")
   (let [tags (:content node)
@@ -39,7 +39,7 @@
         named-properties (map #(->NamedProperty property-type (:name %) (dissoc % :name)) attributes)]
     (into [] named-properties)))
 
-(defn- get-enum-properties [node]
+(defn get-enum-properties [node]
   "Returns enum properties, if present. Returns nil otherwise"
   (let [tags (:content node)
         ; properties is a list of all the properties of the enum
@@ -60,24 +60,24 @@
 
 (defrecord EdgeSpec [target-node-type min-arity max-arity])
 
-(defn- create-edge-spec [edge-def]
+(defn create-edge-spec [edge-def]
   (let [{target-node-type :targetNodeType name :name min-arity :minArity max-arity :maxArity} edge-def]
     {:name name :edge (->EdgeSpec target-node-type min-arity max-arity)}))
 
-(defn- get-edge-specs [node]
+(defn get-edge-specs [node]
   (let [tags (:content node)
         edge-specs (not-empty (filter #(= (:tag % nil) :edgeType) tags))
         edge-specs (map #(create-edge-spec (:attrs %)) edge-specs)]
     edge-specs))
 
-(defn- get-node-type [node]
+(defn get-node-type [node]
   "Return the type of the node, e.g. TOK or EXTRACTOR"
   (-> node :attrs :name))
 
-(defn- get-id-generator [node]
+(defn get-id-generator [node]
   (-> node :attrs :idGenerator))
 
-(defn- node-spec-generator [node]
+(defn node-spec-generator [node]
   "Given a node specification, generate a function to construct node. Node are
   specified like:
 
@@ -103,16 +103,16 @@
    :enum-properties    (get-enum-properties node)
    :edges              (get-edge-specs node)})
 
-(defn- create-node-specs [node-defs]
+(defn create-node-specs [node-defs]
   (into {}
         (map #(hash-map (get-node-type %) (node-spec-generator %)) node-defs)))
 
-(defn- load-schema-file [path-to-file]
+(defn load-schema-file [path-to-file]
   "Loads a PAGI schema from an XML file"
   (if (s/valid? string? path-to-file)
     (:content (parse (java.io.File. path-to-file)))))
 
-(defn- get-node-schema [schema]
+(defn get-node-schema [schema]
   "Returns a sequence of the node type definitions in the schema"
   (s/valid? map? schema)
   (let [is-node-type? #(= (:tag % nil) :nodeType)]

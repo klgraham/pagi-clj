@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pagis id="docgraph" xmlns="http://pagi.org/pagis">
+	<nodeType name="METADATA" idGenerator="METADATA">
+		<description>
+			Metadata for the document.
+		</description>
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<stringProperty name="sourceId" minArity="1" maxArity="1">
+			<description>An identifier that uniquely identifies the content of this message. Two copies of the same
+				message content will have the same sourceId.
+			</description>
+		</stringProperty>
+		<stringProperty name="sourceUrl" minArity="0" maxArity="1">
+			<description>A URL from which the content of this message can be loaded. Can be the same as the sourceId,
+				but this field can be explicitly used to load the original content rather than just serving as an
+				identifier.
+			</description>
+		</stringProperty>
+		<stringProperty name="messageId" minArity="0" maxArity="1">
+			<description>A system-generated identifier for this message. No two messages will have the same messageId.
+			</description>
+		</stringProperty>
+		<stringProperty name="messageName" minArity="1" maxArity="1">
+			<description>A displayable name for this message.</description>
+		</stringProperty>
+		<integerProperty name="size" minArity="1" maxArity="1">
+			<description>The original size of this message in bytes, including content that has been stripped out for
+				the sake of ingestion.
+			</description>
+		</integerProperty>
+		<stringProperty name="batchId" minArity="0" maxArity="1">
+			<description>An identifier used to track the ingestion batch of this message.</description>
+		</stringProperty>
+		<stringProperty name="sourceOrigin" minArity="0" maxArity="1">
+			<description>Name of the origin (e.g. organization) of this message.</description>
+		</stringProperty>
+		<stringProperty name="sourceType" minArity="1" maxArity="1">
+			<description>MIME type of the source document prior to processing</description>
+		</stringProperty>
+		<stringProperty name="documentCreationDate" minArity="1" maxArity="1">
+			<description>Date this document was created; formatted as yyyyMMdd'T'HHmmss.SSSZ</description>
+		</stringProperty>
+		<stringProperty name="documentIngestionDate" minArity="0" maxArity="1">
+			<description>Date this document was ingested; formatted as yyyyMMdd'T'HHmmss.SSSZ</description>
+		</stringProperty>
+		<stringProperty name="documentReferenceDate" minArity="0" maxArity="1">
+			<description>Base date for relative date references in this document; formatted as yyyyMMdd'T'HHmmss.SSSZ</description>
+		</stringProperty>
+	</nodeType>
+	<!-- TOK (token) node type -->
+	<nodeType name="TOK" idGenerator="{prop:start}:{prop:length}">
+		<sequence />
+		<span />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<floatProperty name="conf" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0"/>
+		<floatProperty name="margin" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0"/>
+		<edgeType name="rankEdge" targetNodeType="RANKED_PREDICTION" minArity="0" maxArity="1"/>
+	</nodeType>
+	<!-- SB (sentence) node type -->
+	<nodeType name="SB" idGenerator="{seq}">
+		<sequence />
+		<spanContainer spanType="TOK" />
+		<!-- confidence (optional for SB) -->
+		<floatProperty name="conf" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<edgeType name="parentSectionEdge" targetNodeType="SECTION" minArity="0" maxArity="1" />
+		<edgeType name="synDepRoot" targetNodeType="TOK" minArity="0" maxArity="1" />
+	</nodeType>
+	<!-- T (POS) node type -->
+	<nodeType name="T" idGenerator="{seq}">
+		<sequence />
+		<!-- confidence -->
+		<floatProperty name="conf" minArity="1" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<floatProperty name="margin" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<!-- allowed parts of speech -->
+		<enumProperty name="value" minArity="1" maxArity="1">
+			<description>DRSI pos types.  A set of POS types to be used for all languages.  For languages that have a larger set of POS types, the larger set in the
+				"nativeValue" property should be mapped to this smaller set.</description>
+			<item name="unknown" />
+			<item name="#" />
+			<item name="$$$" />
+			<item name="&apos;" />
+			<item name="&quot;" />
+			<item name="(" />
+			<item name=")" />
+			<item name="," />
+			<item name="." />
+			<item name=":" />
+			<item name="``" />
+			<item name="CC" />
+			<item name="CD" />
+			<item name="DT" />
+			<item name="EX" />
+			<item name="FW" />
+			<item name="IN" />
+			<item name="JJ" />
+			<item name="JJR" />
+			<item name="JJS" />
+			<item name="MD" />
+			<item name="NN" />
+			<item name="NNP" />
+			<item name="NNPS" />
+			<item name="NNS" />
+			<item name="O" />
+			<item name="P1P" />
+			<item name="P1S" />
+			<item name="P2P" />
+			<item name="P2S" />
+			<item name="P3P" />
+			<item name="P3S" />
+			<item name="PDT" />
+			<item name="PL" />
+			<item name="POS" />
+			<item name="PRP" />
+			<item name="PRP$" />
+			<item name="RB" />
+			<item name="RBR" />
+			<item name="RBS" />
+			<item name="RP" />
+			<item name="SYM" />
+			<item name="TO" />
+			<item name="UH" />
+			<item name="VB" />
+			<item name="VBD" />
+			<item name="VBG" />
+			<item name="VBN" />
+			<item name="VBP" />
+			<item name="VBZ" />
+			<item name="WDT" />
+			<item name="WP" />
+			<item name="WP$" />
+			<item name="WRB" />
+			<item name="[" />
+			<item name="]" />
+		</enumProperty>
+		<stringProperty name="nativeValue">
+			<description>Pos type for languages with a larger set of POS types.  These values should be mapped to the standard, smaller set in the "value" property for
+				compatibility.</description>
+		</stringProperty>
+		<edgeType name="tokEdge" targetNodeType="TOK" minArity="1" maxArity="1" />
+		<edgeType name="rankEdge" targetNodeType="RANKED_PREDICTION" minArity="0" maxArity="1"/>
+	</nodeType>
+
+	<nodeType name="SYNDEP" idGenerator="{seq}">
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<floatProperty name="conf" minArity="1" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<enumProperty name="value" minArity="1" maxArity="1">
+			<description>Universal Dependencies</description>
+			<item name="ACL" />
+			<item name="ADVCL" />
+			<item name="ADVMOD" />
+			<item name="AMOD" />
+			<item name="APPOS" />
+			<item name="AUX" />
+			<item name="AUXPASS" />
+			<item name="CASE" />
+			<item name="CC" />
+			<item name="CCOMP" />
+			<item name="COMPOUND" />
+			<item name="CONJ" />
+			<item name="COP" />
+			<item name="CSUBJ" />
+			<item name="CSUBJPASS" />
+			<item name="DEP" />
+			<item name="DET" />
+			<item name="DISCOURSE" />
+			<item name="DISLOCATED" />
+			<item name="DOBJ" />
+			<item name="EXPL" />
+			<item name="FOREIGN" />
+			<item name="GOESWITH" />
+			<item name="IOBJ" />
+			<item name="LIST" />
+			<item name="MARK" />
+			<item name="MWE" />
+			<item name="NAME" />
+			<item name="NEG" />
+			<item name="NMOD" />
+			<item name="NSUBJ" />
+			<item name="NSUBJPASS" />
+			<item name="NUMMOD" />
+			<item name="PARATAXIS" />
+			<item name="PUNCT" />
+			<item name="REMNANT" />
+			<item name="REPARANDUM" />
+			<item name="ROOT" />
+			<item name="VOCATIVE" />
+			<item name="XCOMP" />
+		</enumProperty>
+		<stringProperty name="nativeValue" minArity="0" maxArity="1" />
+		<edgeType name="headEdge" targetNodeType="TOK" minArity="1" maxArity="1" />
+		<edgeType name="dependentEdge" targetNodeType="TOK" minArity="1" maxArity="1" />
+	</nodeType>
+	<!-- P (Chunk/Phrase) node type -->
+	<nodeType name="P" idGenerator="{seq}">
+		<sequence />
+		<spanContainer spanType="TOK" />
+		<!-- confidence -->
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<floatProperty name="conf" minArity="1" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<floatProperty name="margin" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<!-- allowed chunk labels -->
+		<enumProperty name="value" minArity="1" maxArity="1">
+			<description>DRSI chunk types.  A set of chunk types to be used for all languages.  For languages that have a larger set of chunk types in the "nativeValue" the
+				larger set should be mapped to this smaller set.</description>
+			<item name="unknown" />
+			<item name="ADJP" />
+			<item name="ADVP" />
+			<item name="CONJP" />
+			<item name="EOS" />
+			<item name="INTJ" />
+			<item name="NP" />
+			<item name="O" />
+			<item name="PP" />
+			<item name="PRT" />
+			<item name="SBAR" />
+			<item name="VP" />
+		</enumProperty>
+		<stringProperty name="nativeValue" minArity="0" maxArity="1">
+			<description>Chunk type for languages with larger set of phrase types.  These values should be mapped to the smaller DRSI set in the "value" property for
+				compatibility.	</description>
+		</stringProperty>
+		<edgeType name="rankEdge" targetNodeType="RANKED_PREDICTION" minArity="0" maxArity="1"/>
+	</nodeType>
+	<!-- EXTRACTOR node type -->
+	<nodeType name="EXTRACTOR" idGenerator="{prop:value}:{seq}">
+		<!-- confidence -->
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<floatProperty name="conf" minArity="1" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<floatProperty name="margin" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<stringProperty name="value" minArity="1" maxArity="1" />
+		<edgeType name="pEdge" targetNodeType="P" minArity="1" maxArity="1" />
+		<edgeType name="rankEdge" targetNodeType="RANKED_PREDICTION" minArity="0" maxArity="1"/>
+	</nodeType>
+	<!-- NER node type -->
+	<nodeType name="NER" idGenerator="{prop:value}:{seq}">
+		<spanContainer spanType="TOK" />
+		<!-- confidence -->
+		<floatProperty name="conf" minArity="1" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<floatProperty name="margin" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<stringProperty name="value" minArity="1" maxArity="1" />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<edgeType name="rankEdge" targetNodeType="RANKED_PREDICTION" minArity="0" maxArity="1"/>
+	</nodeType>
+	<!-- ACLAUSE (assertion clause) node type -->
+	<nodeType name="ACLAUSE" idGenerator="{prop:type}:{seq}">
+		<spanContainer spanType="P" />
+		<enumProperty name="type" minArity="1" maxArity="1">
+			<item name="SUBJ" />
+			<item name="PRED" />
+			<item name="OBJ" />
+		</enumProperty>
+		<stringProperty name="stem" minArity="0" maxArity="1" />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+	</nodeType>
+	<!-- ASSERT (assertion) node type -->
+	<nodeType name="ASSERT" idGenerator="{seq}">
+		<stringProperty name="category" minArity="0" maxArity="1" />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+
+		<!-- confidence is optional for assertions -->
+		<floatProperty name="conf" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<floatProperty name="margin" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<!-- edge to SUBJECT -->
+		<edgeType name="subjEdge" targetNodeType="ACLAUSE" minArity="0" maxArity="1" />
+		<!-- edge to PREDICATE -->
+		<edgeType name="predEdge" targetNodeType="ACLAUSE" minArity="0" maxArity="1" />
+		<!-- edge to OBJECT -->
+		<edgeType name="objEdge" targetNodeType="ACLAUSE" minArity="0" maxArity="1" />
+	</nodeType>
+	<!-- COREF node type -->
+	<nodeType name="COREF" idGenerator="{seq}">
+		<!-- confidence -->
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<stringProperty name="label" minArity="1" maxArity="1" />
+		<stringProperty name="external-reference" minArity="0" maxArity="1"/>
+		<stringProperty name="gender-cardinality" minArity="1" maxArity="1"/>
+		<edgeType name="pEdge" targetNodeType="P" minArity="1" maxArity="unbounded" />
+		<edgeType name="participantEdge" targetNodeType="PARTICIPANT" minArity="0" maxArity="unbounded"/>
+	</nodeType>
+	<!-- Sentiment node type -->
+	<nodeType name="SENTIMENT" idGenerator="{seq}">
+		<!-- confidence -->
+		<floatProperty name="conf" minArity="1" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<floatProperty name="value" minArity="1" maxArity="1" minRange="-1.0" maxRange="1.0" />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<stringProperty name="type" minArity="1" maxArity="1" />
+		<!-- Use optional source edge to define pairwise sentiment -->
+		<edgeType name="sourceEdge" minArity="0" maxArity="1">
+			<targetNodeType name="REGION"/>
+			<targetNodeType name="NER"/>
+			<targetNodeType name="SECTION"/>
+			<targetNodeType name="SB"/> </edgeType>
+		<!--  Destination where sentiment is directed towards (source of the sentiment may or may not exist) -->
+		<edgeType name="destEdge" minArity="1" maxArity="1">
+			<targetNodeType name="REGION"/>
+			<targetNodeType name="NER"/>
+			<targetNodeType name="SECTION"/>
+			<targetNodeType name="SB"/> </edgeType>
+	</nodeType>
+	<nodeType name="REGION" idGenerator="{seq}">
+		<spanContainer spanType="TOK"/>
+		<edgeType name="next" targetNodeType="REGION" minArity="0" maxArity="1" />
+	</nodeType>
+
+	<!-- Quotation node type -->
+	<nodeType name="QUOTATION" idGenerator="{seq}">
+		<spanContainer spanType="TOK" />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<!-- confidence optional for quotation -->
+		<floatProperty name="conf" minArity="0" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<!-- Edge to a node representing the speaker to whom quotation is attributed -->
+		<edgeType name="attributionEdge" minArity="0" maxArity="1">
+			<targetNodeType name="P"/>
+			<targetNodeType name="PARTICIPANT"/>
+		</edgeType>
+	</nodeType>
+
+	<!-- IGNORE node type: section of document to ignore -->
+	<nodeType name="IGNORE" idGenerator="{prop:start}:{prop:length}">
+		<span />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<stringProperty name="type" minArity="1" maxArity="1" />
+		<stringProperty name="value" minArity="1" maxArity="1"/>
+		<floatProperty  name="conf" minArity="1" maxArity="1" minRange="0" maxRange="1" />
+	</nodeType>
+	<!-- CXEL node type -->
+	<nodeType name="CXEL" idGenerator="{seq}">
+		<spanContainer spanType="TOK" />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<stringProperty name="role" minArity="1" maxArity="1" />
+		<floatProperty  name="conf" minArity="1" maxArity="1" minRange="0" maxRange="1" />
+		<stringProperty name="offsets" minArity="1" maxArity="1" />
+		<edgeType name="externalEntityRef" targetNodeType="EXTERNAL_ENTITY_REF" minArity="0" maxArity="1" />
+	</nodeType>
+	<!-- Knowledge Object node type -->
+	<nodeType name="KO" idGenerator="{seq}">
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<stringProperty name="type" minArity="1" maxArity="1" />
+		<stringProperty name="value" minArity="1" maxArity="1" />
+		<floatProperty  name="conf" minArity="1" maxArity="1" minRange="0" maxRange="1" />
+		<edgeType name="chunk" targetNodeType="P" minArity="1" maxArity="1"/>
+	</nodeType>
+	<nodeType name="SECTION" idGenerator="{seq}">
+		<sequence />
+		<span />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<stringProperty name="type" minArity="1" maxArity="1" />
+		<floatProperty name="conf" minArity="1" maxArity="1" minRange="0.0" maxRange="1.0" />
+		<edgeType name="parentSectionEdge" targetNodeType="SECTION" minArity="0" maxArity="1" />
+		<edgeType name="nextByAuthor" targetNodeType="SECTION" minArity="0" maxArity="1" >
+			<description>Edge to next SECTION by same author, to be used where continuous thought from a single author may span sections.</description>
+		</edgeType>
+	</nodeType>
+	<nodeType name="SUMMARY" idGenerator="{edge:section}">
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<stringProperty name="value" minArity="1" maxArity="1"/>
+		<floatProperty name="conf" minArity="1" maxArity="1" minRange="0.0" maxRange="1.0"/>
+		<edgeType name="section" targetNodeType="SECTION" minArity="1" maxArity="1"/>
+	</nodeType>
+	<!-- Email specific annotations -->
+	<nodeType name="META_FIELD" idGenerator="{prop:key}:{seq}">
+		<span/>
+		<stringProperty name="key" minArity="1" maxArity="1"/>
+		<stringProperty name="value" minArity="0" maxArity="1"/>
+		<edgeType name="section" minArity="1" maxArity="1" targetNodeType="SECTION"/>
+	</nodeType>
+	<nodeType name="PARTICIPANT" idGenerator="{prop:type}:{seq}">
+		<enumProperty name="type" minArity="1" maxArity="unbounded">
+			<item name="author"/>
+			<item name="primary-recipient"/>
+			<item name="copied-recipient"/>
+			<item name="blind-copied-recipient"/>
+		</enumProperty>
+		<stringProperty name="name" minArity="0" maxArity="1"/>
+		<stringProperty name="e-mail" minArity="0" maxArity="1"/>
+		<stringProperty name="chat-id" minArity="0" maxArity="1"/>
+		<stringProperty name="alias" minArity="0" maxArity="unbounded">
+			<description>Alias can be used for an alias or nickname used in chat or other messages.</description>
+		</stringProperty>
+		<stringProperty name="external-reference" minArity="0" maxArity="1"/>
+		<edgeType name="field" minArity="0" maxArity="unbounded" targetNodeType="META_FIELD"/>
+		<edgeType name="context" minArity="1" maxArity="unbounded" targetNodeType="SECTION">
+			<description> Edge to highest level section where participant has the specified type/role.  Participant information should be obtained from first parentSection that has a
+				PARTICIPANT node.</description>
+		</edgeType>
+
+	</nodeType>
+
+	<!--Temporal node type-->
+	<nodeType name="TIME" idGenerator="{seq}">
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+		<stringProperty name="timestamp" minArity="1" maxArity="1"/>
+		<edgeType name="extractorEdge" targetNodeType="EXTRACTOR" minArity="1" maxArity="1" />
+	</nodeType>
+
+	<nodeType name="GEO_LOCATION" idGenerator="{seq}">
+		<spanContainer spanType="TOK"/>
+		<stringProperty name="country-code" minArity="0" maxArity="1"/>
+		<stringProperty name="country-name" minArity="0" maxArity="1"/>
+		<stringProperty name="location-name" minArity="0" maxArity="1"/>
+		<stringProperty name="coordinate-mgrs" minArity="0" maxArity="1"/>
+		<floatProperty name="coordinate-latitude" minArity="1" maxArity="1"/>
+		<floatProperty name="coordinate-longitude" minArity="1" maxArity="1"/>
+	</nodeType>
+
+
+	<nodeType name="MARKER" idGenerator="{prop:start}:{prop:length}">
+		<description>allows a single parent node to have edges to multiple, non-sequential spans</description>
+		<span />
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+	</nodeType>
+
+	<nodeType name="EXTERNAL_ENTITY_REF" idGenerator="{prop:source}:{prop:sourceIdentifier}">
+		<description><![CDATA[This node holds external entity info.
+			The source and sourceIdentifier properties together identify
+			a unique external entity to which the marker edges refer.
+			]]></description>
+		<stringProperty name="prov" minArity="1" maxArity="1" />
+
+		<!--Two stringProperties below constitute a reference to an external entity: "source" + "sid"-->
+		<stringProperty name="source" minArity="1" maxArity="1" />
+		<stringProperty name="sourceIdentifier" minArity="1" maxArity="1" />
+
+		<edgeType name="marker" targetNodeType="MARKER" minArity="1" maxArity="unbounded"/>
+	</nodeType>
+
+
+</pagis>
